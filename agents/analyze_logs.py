@@ -5,7 +5,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-@tool
+#analyze the logs and provide a detailed solution to bring the system back up and running
+
+
+
+
 def analyze_logs(logs: str) -> str:
     # have some GraphQL endpoint to stream the data
 
