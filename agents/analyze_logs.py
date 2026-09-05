@@ -2,16 +2,16 @@ from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.tools import tool
 from dotenv import load_dotenv
+from state import State
 
 load_dotenv()
 
-#analyze the logs and provide a detailed solution to bring the system back up and running
 
 
 
-
-def analyze_logs(logs: str) -> str:
-    # have some GraphQL endpoint to stream the data
+@tool
+def analyze_logs(state:State) -> str:
+    """Uses Azure AI to analyze the logs and give feedback for a detailed solution"""
 
     agent = create_agent(
         model="google_genai:gemini-3.5-flash",
