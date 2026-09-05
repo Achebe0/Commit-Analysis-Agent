@@ -10,39 +10,35 @@ import os
 
 load_dotenv()
 
-
+#declaring the model
 llm = init_chat_model(
     "google_genai:gemini-3.5-flash",
 )
 
+#giving the agent a system prompt and goal
 agent = create_agent(
     model=llm,
-
-    system_prompt="You are an engineer with 15 YOE, diagnose the issues in the txt file and give a detailed solution"
-                  "for an engineer to implement the solution. The solution should be detailed enough for an experienced engineer to implement the solution. ",
+    system_prompt="You are a senior engineer with 15 YOE, given an issue you can produce a detailed, implementation ready"
+                  " solution with concrete steps, considering edge cases and code eligibility"
 )
 
-result = agent.invoke(
-    {"messages": [{"role": "user", "content": f"Analyze the logs and propose a solution:  {logs}"}]}
-)
-print(result["messages"][-1].content_blocks)
-
-def developer_agent(state:State, output_file:str):
-    log_file = ingestion.get_render_logs(state,output_file)
-
-    with open(log_file,"r") as f:
-        logs = f.read()
-
+# the function takes the ingest file and passes the state and the output file
+def developer_agent(state:State, issue_analysis, output_file:str):
     result = agent.invoke({
         "messages":[
-            {"role":"user","content":f"Analyze the logs and propose a detailed solution: \n\n {logs}"}
+            {
+                "role":"user",
+                "content":(
+                    "Create a detailed solution for the issue analysis\n\n"
+                    f"{issue_analysis}\n\n"
+                )
+            }
         ]
     })
 
-    analysis = result["messages"][-1].content
+    solution = result["messages"][-1].content
+    return create_markdown_file(output_file, "Solution", solution)
 
-    create_markdown_file("analysis.md", "Analysis of System Logs", analysis)
-    return state.analysis_file
 
 def create_markdown_file(file, title, body:str):
     with open(file, "w") as f:

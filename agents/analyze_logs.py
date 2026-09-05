@@ -3,6 +3,7 @@ from langchain.chat_models import init_chat_model
 from langchain_core.tools import tool
 from dotenv import load_dotenv
 from state import State
+from agents import ingestion
 
 load_dotenv()
 
@@ -28,8 +29,4 @@ def analyze_logs(state:State) -> str:
 
     return result["messages"][-1].content
 
-    # call on a tool and use Gemini to analyze and give feedback into what is going on
-
-
-    # pass this onto the developer_agent
 
